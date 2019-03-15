@@ -1,82 +1,71 @@
-#coding:utf-8
-#洪水填充法去除大的噪点
-import numpy as np
-from PIL import Image
-import sys
+# 去除噪点
+from PIL import Image,ImageDraw
+from collections import Counter
 
 
-#是我dfs写的有问题吗。。不加最大深度会爆栈，真的是有问题。。
-sys.setrecursionlimit(160*60)
-#全局定义太多差评。。。
-filename = 'imgs/1.png'
-img = Image.open(filename)
-img = img.convert('L')
+# 二值数组
+t2val = {}
 
-visited = np.array(0)
-(w, h) = img.size
-visited = np.array([-1]*w*h)
-print(visited)
-visited.shape= (w,h)
-threshold = 100
-zone_threshold = w*h/100
-zone = [0]*w*h
+# 根据一个点A的RGB值，与周围的8个点的RBG值比较，设定一个值N（0 <N <8），当A的RGB值与周围8个点的RGB相等数小于N时，此点为噪点
+# G: Integer 图像二值化阀值
+# N: Integer 降噪率 0 <N <8
+# Z: Integer 降噪次数
+# 输出
+#  0：降噪成功
+#  1：降噪失败
 
-def flood_fill_denoise(img):
-    print(img.size)
-    index = 1
-    for i in range(w):
-        for j in range(h):
-            if visited[i][j] == -1:
-                if img.getpixel((i,j)) < threshold:
-                    dfs(i, j, index)
-                    index += 1
-                else:
-                    visited[i][j] == 0
-    
-    remove_list = [0]*w*h
-    for id, val in enumerate(zone):
-        if val < zone_threshold:
-            remove_list[id] = 1
-
-    for i in range(w):
-        for j in range(h):
-            if remove_list[visited[i][j]] == 1:
-                img.putpixel((i,j), 255)
-            
-    return img 
-
-def dfs(x, y, index):
-    #print x, y, index,w, h
-    if visited[x][y] != -1:
-        return
-    visited[x][y] = index
-    zone[index] += 1 
-    dx = [-1, 0, 1, 0]
-    dy = [0, 1, 0, -1]
-    for i in range(4):
-        nx = x+dx[i]
-        ny = y+dy[i]
-        if nx > 0 and nx < w and ny > 0 and ny < h and  visited[nx][ny] == -1:
-            if img.getpixel((nx, ny)) < threshold:
-                dfs(nx, ny, index)
+def twoValue(image, G):
+    for y in range(0, image.size[1]):
+        for x in range(0, image.size[0]):
+            g = image.getpixel((x, y))
+            if g > G:
+                t2val[(x, y)] = 1
             else:
-                visited[nx][ny] = 0
-    return
+                t2val[(x, y)] = 0
 
-# 二值化图片
-#i mg为Image类型 b为阈值
-def getBinaryImage(img, b):
-    for i in range(img.size[0]):
-        for j in range(img.size[1]):
-            if img.getpixel((i,j)) > b:
-                img.putpixel((i,j), 255)
-            else:
-                img.putpixel((i,j), 0)
-    return img
 
-if __name__ == '__main__':
-    img = getBinaryImage(img, threshold)
-    img.save('binary'+filename)
-    new_img = flood_fill_denoise(img)
-    new_img.save('result'+filename)
-    new_img.show()
+def clearNoise(image, N, Z):
+    # 0和1互相转换
+    def one_zero(num):
+        if num == 1:
+            return 0
+        else:
+            return 1
+
+    for i in range(0, Z):
+        t2val[(0, 0)] = 1
+        t2val[(image.size[0] - 1, image.size[1] - 1)] = 1
+
+        for x in range(1, image.size[0] - 1):
+            for y in range(1, image.size[1] - 1):
+                L = t2val[(x, y)]# 0或1
+                # 统计临近8个点是0还是1
+                near8 = [t2val[(x - 1, y - 1)], t2val[(x - 1, y)],\
+                t2val[(x - 1, y + 1)], t2val[(x, y - 1)], t2val[(x, y + 1)], \
+                t2val[(x + 1, y - 1)], t2val[(x + 1, y)], t2val[(x + 1, y + 1)]]
+                # data 计算0黑点数与 1白点数
+                data = Counter(near8)
+                if data[L] < N:
+                    t2val[(x, y)] = one_zero(L)
+
+
+
+def saveImage(filename, size):
+    image = Image.new("1", size)
+    draw = ImageDraw.Draw(image)
+
+    for x in range(0, size[0]):
+        for y in range(0, size[1]):
+            draw.point((x, y), t2val[(x, y)])
+
+    image.save(filename)
+
+for i in range(2,5):
+    path =  'imgs/' + str(i) + ".png"
+    image = Image.open(path).convert("L")
+    twoValue(image, 100)
+    clearNoise(image, 2, 1)
+    path1 = 'resultimgs/' + str(i) + ".jpeg"
+    saveImage(path1, image.size)
+
+

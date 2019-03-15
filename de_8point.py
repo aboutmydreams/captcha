@@ -65,7 +65,7 @@ for i in range(12,22):
     image = Image.open(path).convert("L")
     twoValue(image, 100)
     clearNoise(image, 2, 1)
-    path1 = 'resultimgs/' + str(i) + ".png"
+    path1 = 'resultimgs/' + str(i) + ".jpeg"
     saveImage(path1, image.size)
 
 
