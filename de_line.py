@@ -26,7 +26,7 @@ def clear_line(image):
     mode = get_modes(image)
     new_mode = []
     for line in mode.T:
-        new_column = is_three0(line)
+        new_column = is_three0(line,4)
         new_mode.append(list(new_column))
     new_mode = eval(str(new_mode).replace('1','[255,255,255]').replace('0','[0,0,0]'))
     print(new_mode)
@@ -39,6 +39,13 @@ def clear_line(image):
 def is_three0(column, N):
     column_str = ''.join(column)
     zero_site_list = [i for i,v in enumerate(column) if v==0]
+    for i in  zero_site_list[-N:]:
+        if i > len(column) - N:
+            zero_site_list.remove(i)
+    for i in zero_site_list:
+        if column_str[i:i+N] == '0' * N and column_str[i+1+N] == '1' and column_str[i-1] == '1' and i > 0:
+            column_str[i:i+N] = '1'*N
+    column = list(column_str)
             # if (column[i-1]==0) and (column[i+1]==0) and (column[i-2]==1) and (column[i+2]==1):
                 # column[i+1],column[i+2],column[i+3]=1,1,1
     return column
@@ -46,5 +53,6 @@ def is_three0(column, N):
 
 img1 = Image.open('resultimgs/1.png')
 mode1 = get_modes(img1)
-
-clear_line(img1)
+print(mode1.T[0])
+print(is_three0(mode1.T[0], 3))
+# clear_line(img1)
