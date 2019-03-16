@@ -60,12 +60,12 @@ def saveImage(filename, size):
 
     image.save(filename)
 
-for i in range(2,5):
+for i in range(1,50):
     path =  'imgs/' + str(i) + ".png"
     image = Image.open(path).convert("L")
     twoValue(image, 100)
     clearNoise(image, 2, 1)
-    path1 = 'resultimgs/' + str(i) + ".jpeg"
+    path1 = 'de_point_imgs/' + str(i) + ".jpeg"
     saveImage(path1, image.size)
 
 

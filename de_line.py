@@ -8,7 +8,6 @@ np.set_printoptions(threshold = np.inf)
 
 def get_modes(img):
     mode = np.array(img)
-    print(mode)
     mode = np.where(mode < 100, 0, 1)
     return mode
 
@@ -46,13 +45,10 @@ def is_three0(column, N):
     column = list(map(int,column_str))
     return column
 
-
-img1 = Image.open('resultimgs/4.jpeg')
-print(img1.size)
-mode1 = get_modes(img1)
-
-# print(is_three0(mode1.T[1], 3))
-img2 = clear_line(img1,3)
-
-img3 = clear_line(img2.convert('L'),4)
-img3.show()
+for i in range(1,50):
+    img1 = Image.open('resultimgs/{}.jpeg'.format(str(i)))
+    # print(is_three0(mode1.T[1], 3))
+    img2 = clear_line(img1,3)
+    img3 = clear_line(img2.convert('L'),4)
+    img3.save('lastimgs/{}.png'.format(str(i)))
+print(get_modes(Image.open('de_line_imgs/2.png')))
