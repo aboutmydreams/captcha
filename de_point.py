@@ -14,7 +14,7 @@ t2val = {}
 #  0：降噪成功
 #  1：降噪失败
 
-def twoValue(image, G):
+def two_value(image, G):
     for y in range(0, image.size[1]):
         for x in range(0, image.size[0]):
             g = image.getpixel((x, y))
@@ -24,7 +24,7 @@ def twoValue(image, G):
                 t2val[(x, y)] = 0
 
 
-def clearNoise(image, N, Z):
+def clear_noise(image, N, Z):
     # 0和1互相转换
     def one_zero(num):
         if num == 1:
@@ -50,7 +50,7 @@ def clearNoise(image, N, Z):
 
 
 
-def saveImage(filename, size):
+def save_img(filename, size):
     image = Image.new("1", size)
     draw = ImageDraw.Draw(image)
 
@@ -63,9 +63,9 @@ def saveImage(filename, size):
 for i in range(1,50):
     path =  'imgs/' + str(i) + ".png"
     image = Image.open(path).convert("L")
-    twoValue(image, 100)
-    clearNoise(image, 2, 1)
+    two_value(image, 100)
+    clear_noise(image, 2, 1)
     path1 = 'de_point_imgs/' + str(i) + ".jpeg"
-    saveImage(path1, image.size)
+    save_img(path1, image.size)
 
 

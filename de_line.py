@@ -6,18 +6,24 @@ import numpy as np
 # 保证所有数据能够显示，而不是用省略号表示
 np.set_printoptions(threshold = np.inf) 
 
+# 将图片转化为数组 这里会预先灰度化
 def get_modes(img):
+    img = img.convert('L')
     mode = np.array(img)
     mode = np.where(mode < 100, 0, 1)
     return mode
 
-# N 干扰线纵向像素点个数
-def clear_line(image, N):
-    # 0和1互相转换
-    t2val = {}
-    t2val[(0, 0)] = 1
-    t2val[(image.size[0] - 1, image.size[1] - 1)] = 1
+# 左平移 D为正，右平移，D为负
+def pan(line,D):
+    if D == 0:
+        return line
+    else:
+        line = line[D:] + line[:D]
+    return line
 
+
+# N 干扰线纵向像素点个数
+def clear_line(image, N, pans=None):
     mode = get_modes(image)
     new_mode = []
     for line in mode.T:
@@ -25,7 +31,15 @@ def clear_line(image, N):
         new_mode.append(new_column)
 
     new_mode = eval(str(new_mode).replace('1','255').replace('0','0'))
-    image = Image.fromarray(np.array(new_mode).T.astype('uint8')).convert('RGB')
+    
+    array_mode = np.array(new_mode).T.astype('uint8')
+    if pans:
+        new_mode = []
+        for k,line in enumerate(array_mode.tolist()):
+            line = pan(line,pans[k])
+            new_mode.append(line)
+        array_mode = np.array(new_mode).astype('uint8')
+    image = Image.fromarray(array_mode).convert('RGB')
     return image
 
 
@@ -45,10 +59,21 @@ def is_three0(column, N):
     column = list(map(int,column_str))
     return column
 
+# for i in range(1,50):
+#     img1 = Image.open('de_point_imgs/{}.jpeg'.format(str(i)))
+#     # print(is_three0(mode1.T[1], 3))
+#     img2 = clear_line(img1,3)
+#     img3 = clear_line(img2.convert('L'),4)
+#     img3.save('lastimgs/{}.png'.format(str(i)))
+
+img1 = Image.open('de_point_imgs/3.jpeg')
 for i in range(1,50):
-    img1 = Image.open('resultimgs/{}.jpeg'.format(str(i)))
-    # print(is_three0(mode1.T[1], 3))
-    img2 = clear_line(img1,3)
-    img3 = clear_line(img2.convert('L'),4)
-    img3.save('lastimgs/{}.png'.format(str(i)))
-print(get_modes(Image.open('de_line_imgs/2.png')))
+    img1 = Image.open('de_point_imgs/{}.jpeg'.format(str(i)))
+    panD_list = [18, 18, 18, 18, 17, 17, 17, 16, 16, 16, 15, 15, 15, 15, 14, 14, 14, 14, 13, 13, 10, 10, 10, 9, 9, 8, 7, 6, 5, 5, 4, 4, 4, 4, 4, 3, 1, 0, 0, 0]
+    img2 = clear_line(img1,4)
+    img2 = clear_line(img2,3,panD_list)
+    img2 = clear_line(img2,4)
+    img2 = clear_line(img2,3)
+    img2 = clear_line(img2,2)
+    img2 = clear_line(img2,1)
+    img2.save('de_crook_imgs/{}.png'.format(i))
