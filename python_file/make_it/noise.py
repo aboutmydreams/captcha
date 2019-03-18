@@ -1,10 +1,7 @@
-from PIL import Image, ImageDraw, ImageFont, ImageFilter
+from PIL import Image, ImageDraw
 from collections import Counter
 import numpy as np
-import random,time
-
-
-
+import random
 
 
 # 根据一个点A的RGB值，与周围的8个点的RBG值比较，周围有大于1个不同的，那么考虑一定概率增加噪点
@@ -19,6 +16,14 @@ def mode_to_dic(mode):
         for i in range(0,mode.shape[0]):
             dic[(i, line)] = mode[i,line]
     return dic
+
+def mode_to_draw(mode):
+    image = Image.new("1", (mode.shape[1],mode.shape[0]))
+    draw = ImageDraw.Draw(image)
+    for x in range(0, mode.shape[0]):
+        for y in range(0, mode.shape[1]):
+            draw.point((y, x), int(mode[x,y]))
+    return image
 
 
 def more_noise(mode, N, Z):
@@ -35,7 +40,6 @@ def more_noise(mode, N, Z):
     for i in range(0, Z):
         img_dic[(0, 0)] = 1
         img_dic[(mode.shape[0] - 1, mode.shape[1] - 1)] = 1
-        
         for x in range(1, mode.shape[0] - 1):
             for y in range(1, mode.shape[1] - 1):
                 random_num = random.random()
@@ -49,15 +53,14 @@ def more_noise(mode, N, Z):
                 data = Counter(near8)
                 # 一样的点小于8
                 if (data[L] < 8) and random_num < N:
-                    img_dic[(x, y)] = one_zero(L)
+                    # img_dic[(x, y)] = one_zero(L)
+                    # mode[x,y] = one_zero(L)
+                    mode[x,y] = 0
+    # print(mode.shape)
+    image = mode_to_draw(mode)
+    # print(image.size)
+    return image
 
-    image = Image.new("1", mode.shape)
-    draw = ImageDraw.Draw(image)
-    for x in range(0, mode.shape[0]):
-        for y in range(0, mode.shape[1]):
-            draw.point((x, y), img_dic[(x, y)])
-
-    image.show()
 
 
 
