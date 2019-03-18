@@ -64,7 +64,7 @@ def mode_to_img(mode,background=None):
 
 
 # 随机增加临近噪点
-def more_noise(mode):
+
     
 # 随机造成缺失
 
