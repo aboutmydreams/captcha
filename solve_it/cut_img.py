@@ -90,7 +90,3 @@ def cut_img(img,max_width):
         # img.show()
     return li
 
-# img7 = Image.open('7.png')
-# mode_list = cut_img(img7,30)
-# for i in mode_list:
-#     print(np.shape(i))

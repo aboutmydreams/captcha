@@ -4,12 +4,8 @@ import numpy as np
 import random
 
 
-# 根据一个点A的RGB值，与周围的8个点的RBG值比较，周围有大于1个不同的，那么考虑一定概率增加噪点
-# G: Integer 图像二值化阀值
-# N: Integer 加噪率 0 < N < 1
-# Z: Integer 加噪次数
 
-
+# 将np数组转化成01 dic 后面会废弃
 def mode_to_dic(mode):
     dic = {}
     for line in range(0,mode.shape[1]):
@@ -17,6 +13,7 @@ def mode_to_dic(mode):
             dic[(i, line)] = mode[i,line]
     return dic
 
+# 将01 np数组转化为黑白图片
 def mode_to_draw(mode):
     image = Image.new("1", (mode.shape[1],mode.shape[0]))
     draw = ImageDraw.Draw(image)
@@ -26,7 +23,15 @@ def mode_to_draw(mode):
     return image
 
 
-def more_noise(mode, N, Z):
+
+
+# 根据一个点A的RGB值，与周围的8个点的RBG值比较，周围有大于1个不同的，那么考虑一定概率增加噪点
+# G: Integer 图像二值化阀值
+# N: Integer 加噪率 0 < N < 1
+# Z: Integer 加噪次数
+
+
+def more_noise(mode, N, Z, to_img=None):
     # 0和1互相转换
     def one_zero(num):
         if num == 1:
@@ -34,6 +39,7 @@ def more_noise(mode, N, Z):
         else:
             return 1
     
+
     # 二值数组
     img_dic = mode_to_dic(mode)
 
@@ -57,9 +63,12 @@ def more_noise(mode, N, Z):
                     # mode[x,y] = one_zero(L)
                     mode[x,y] = 0
     # print(mode.shape)
-    image = mode_to_draw(mode)
-    # print(image.size)
-    return image
+    if to_img:
+        image = mode_to_draw(mode)
+        # print(image.size)
+        return image
+    else:
+        return mode
 
 
 

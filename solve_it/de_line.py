@@ -59,21 +59,23 @@ def is_three0(column, N):
     column = list(map(int,column_str))
     return column
 
-# for i in range(1,50):
-#     img1 = Image.open('de_point_imgs/{}.jpeg'.format(str(i)))
-#     # print(is_three0(mode1.T[1], 3))
-#     img2 = clear_line(img1,3)
-#     img3 = clear_line(img2.convert('L'),4)
-#     img3.save('lastimgs/{}.png'.format(str(i)))
-
-img1 = Image.open('de_point_imgs/3.jpeg')
-for i in range(1,50):
-    img1 = Image.open('de_point_imgs/{}.jpeg'.format(str(i)))
+# 处理真实图片
+def clear_my_line(img):
     panD_list = [18, 18, 18, 18, 17, 17, 17, 16, 16, 16, 15, 15, 15, 15, 14, 14, 14, 14, 13, 13, 10, 10, 10, 9, 9, 8, 7, 6, 5, 5, 4, 4, 4, 4, 4, 3, 1, 0, 0, 0]
-    img2 = clear_line(img1,4)
+    img2 = clear_line(img,4)
     img2 = clear_line(img2,3,panD_list)
     img2 = clear_line(img2,4)
     img2 = clear_line(img2,3)
     img2 = clear_line(img2,2)
     img2 = clear_line(img2,1)
-    img2.save('de_crook_imgs/{}.png'.format(i))
+    return img2
+
+
+# 清理训练集
+def clear_my_train_img(img):
+    # panD_list = [18, 18, 18, 18, 17, 17, 17, 16, 16, 16, 15, 15, 15, 15, 14, 14, 14, 14, 13, 13, 10, 10, 10, 9, 9, 8, 7, 6, 5, 5, 4, 4, 4, 4, 4, 3, 1, 0, 0, 0]
+    img2 = clear_line(img,4)
+    img2 = clear_line(img2,3)
+    img2 = clear_line(img2,2)
+    img2 = clear_line(img2,1)
+    return img2

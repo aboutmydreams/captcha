@@ -64,12 +64,12 @@ def save_img(filename, size, img_dic):
 
     image.save(filename)
 
-for i in range(1,2):
-    path =  str(i) + ".png"
-    image = Image.open(path).convert("L")
-    img_dic = clear_noise(image, 2, 1)
-    print(img_dic)
-    path1 = str(i) + ".jpeg"
-    save_img(path1, image.size, img_dic)
+# for i in range(1,2):
+#     path =  str(i) + ".png"
+#     image = Image.open(path).convert("L")
+#     img_dic = clear_noise(image, 2, 1)
+#     print(img_dic)
+#     path1 = str(i) + ".jpeg"
+#     save_img(path1, image.size, img_dic)
 
 
