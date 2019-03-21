@@ -89,4 +89,3 @@ def cut_img(img,max_width):
         # img = mode_to_img(i,255)
         # img.show()
     return li
-
