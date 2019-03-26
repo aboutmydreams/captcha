@@ -1,6 +1,7 @@
 # 去除噪点
 from PIL import Image,ImageDraw
 from collections import Counter
+import numpy as np
 
 
 
@@ -15,6 +16,7 @@ from collections import Counter
 
 def two_value(image, G):
     # 二值数组
+    image = image.convert("L")
     img_dic = {}
     for y in range(0, image.size[1]):
         for x in range(0, image.size[0]):
@@ -26,6 +28,19 @@ def two_value(image, G):
     return img_dic
 
 
+def get_modes(img,Threshold=100):
+    img = img.convert('L')
+    mode = np.array(img)
+    mode = np.where(mode < Threshold, 0, 1)
+    return mode
+
+def mode_to_img(mode,background=None):
+    if background:
+        mode = np.where(mode < 1, 0, background)
+    array_mode = np.array(mode).astype('uint8')
+    image = Image.fromarray(array_mode).convert('RGB')
+    return image
+
 def clear_noise(image, N, Z):
     # 0和1互相转换
     def one_zero(num):
@@ -34,7 +49,9 @@ def clear_noise(image, N, Z):
         else:
             return 1
     # 二值数组
+    image = image.convert("L")
     img_dic = two_value(image,100)
+    mode = get_modes(image)
     for i in range(0, Z):
         img_dic[(0, 0)] = 1
         img_dic[(image.size[0] - 1, image.size[1] - 1)] = 1
@@ -49,8 +66,9 @@ def clear_noise(image, N, Z):
                 # data 计算0黑点数与 1白点数
                 data = Counter(near8)
                 if data[L] < N:
-                    img_dic[(x, y)] = one_zero(L)
-    return img_dic
+                    # img_dic[(x, y)] = one_zero(L)
+                    mode[y,x] = one_zero(L)
+    return mode_to_img(mode,255)
 
 
 

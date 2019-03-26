@@ -88,11 +88,11 @@ def train_img():
     # 在这里增加难度与异动
     mode = get_modes(image,100)
     # 偏移
-    mode = img_pan(mode,random.randint(-3,3),random.randint(-2,2))
+    mode = img_pan(mode,random.randint(-5,5),random.randint(-4,4))
     # 添加噪点
-    image = make_captcha.noise.more_noise(mode,0.3,3,'to_img')
+    image = make_captcha.noise.more_noise(mode,N=0.4,Z=5,to_img='to_img')
     # 旋转
-    image = image.rotate(random.randint(-20,20),fillcolor=255) 
+    image = image.rotate(random.randint(-30,30),fillcolor=255) 
     # print(image.size)
     # image.save('train_imgs/{}.png'.format(file_name))
     return file_name,image
