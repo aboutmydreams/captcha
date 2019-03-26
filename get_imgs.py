@@ -29,7 +29,7 @@ def save_train_imgs(train_img_path):
             img = solve_it.clear_lib_line(img)
             img_list = solve_it.cut_img_to_img_list(img,30)
             for k,i in enumerate(img_list):
-                random_num = str(time.time())[-10:-3].replace('.',str(random.random())[2:4]
+                random_num = str(time.time())[-10:-3].replace('.',str(random.random())[2:4])
                 i.save('train_imgs/{}.png'.format(file[k]+'-'+random_num))
                 print(k)
 
