@@ -14,17 +14,17 @@ import numpy as np
 import make_captcha,solve_it
 
 def get_my_train_img(times):
-    for i in range(times):
+    for _ in range(times):
         name,mig = make_captcha.get_train_img()
         mig = solve_it.clear_train_img(mig)
-        mig.save('train_imgs/{}.png'.format(name))
+        mig.save(f'train_imgs/{name}.png')
 
 
 def get_my_test_img(times):
-    for i in range(times):
+    for _ in range(times):
         name,mig = make_captcha.get_train_img()
         mig = solve_it.clear_train_img(mig)
-        mig.save('test_imgs/{}.png'.format(name))
+        mig.save(f'test_imgs/{name}.png')
 
 # get_my_train_img(500)
 # get_my_test_img(50)

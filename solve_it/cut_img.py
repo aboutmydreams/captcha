@@ -19,15 +19,11 @@ def mode_to_img(mode,background=None):
     if background:
         mode = np.where(mode < 1, 0, background)
     array_mode = np.array(mode).astype('uint8')
-    image = Image.fromarray(array_mode).convert('RGB')
-    return image
+    return Image.fromarray(array_mode).convert('RGB')
 
 
 def is_white_column(column):
-    for c in column:
-        if c == 0:
-            return False
-    return True
+    return all(c != 0 for c in column)
 
 
 # 返回分割后的numpy矩阵
@@ -40,7 +36,7 @@ def vertical_cut(rect):
     bools = []
     for x in range(width):
         c_position = x
-        bools.append(is_white_column(rect[:, x]))
+        bools.append(is_white_column(rect[:, c_position]))
         if bools[-1] and (bools[-2] if bools.__len__() > 2 else True):
             last_position = c_position
         if bools[-1] and (not bools[-2] if bools.__len__() > 2 else True):
